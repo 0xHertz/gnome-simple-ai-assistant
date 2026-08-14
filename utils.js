@@ -64,6 +64,30 @@ export function parseBlocks(text) {
 	return blocks;
 }
 
+function stripPango(markup) {
+	return markup
+		.replace(/<\/?[a-zA-Z][^>]*>/g, "")
+		.replace(/&amp;/g, "&")
+		.replace(/&lt;/g, "<")
+		.replace(/&gt;/g, ">");
+}
+
+function displayWidth(text) {
+	let width = 0;
+	for (const ch of text) {
+		const code = ch.codePointAt(0);
+		width +=
+			(code >= 0x2e80 && code <= 0x9fff) ||
+			(code >= 0xac00 && code <= 0xd7af) ||
+			(code >= 0xff00 && code <= 0xff60) ||
+			(code >= 0xfe30 && code <= 0xfe4f) ||
+			(code >= 0x3000 && code <= 0x303f)
+				? 2
+				: 1;
+	}
+	return width;
+}
+
 // Render a markdown table as aligned monospace Pango markup.
 export function formatTable(text) {
 	const rows = [];
@@ -84,13 +108,21 @@ export function formatTable(text) {
 	const widths = new Array(colCount).fill(0);
 	for (const row of rows) {
 		for (let c = 0; c < row.length; c++) {
-			widths[c] = Math.max(widths[c], row[c].length);
+			const plain = stripPango(formatMessage(row[c] ?? ""));
+			widths[c] = Math.max(widths[c], displayWidth(plain));
 		}
 	}
+
+	const fmtCell = (cell, width) => {
+		const markup = formatMessage(cell);
+		const pad = Math.max(0, width - displayWidth(stripPango(markup)));
+		return markup + " ".repeat(pad);
+	};
+
 	const fmtRow = row => {
 		const cells = [];
 		for (let c = 0; c < colCount; c++) {
-			cells.push((row[c] ?? "").padEnd(widths[c]));
+			cells.push(fmtCell(row[c] ?? "", widths[c]));
 		}
 		return cells.join("  ").trimEnd();
 	};
@@ -99,7 +131,7 @@ export function formatTable(text) {
 
 	const out = [];
 	for (let r = 0; r < rows.length; r++) {
-		const rowText = escapePango(fmtRow(rows[r]));
+		const rowText = fmtRow(rows[r]);
 		out.push(r === 0 ? `<b>${rowText}</b>` : rowText);
 		if (r === 0) out.push(`<span foreground="#9a9a9a">${sep}</span>`);
 	}
