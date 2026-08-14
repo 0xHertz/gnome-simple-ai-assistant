@@ -23,6 +23,29 @@
 	margin-bottom: 12px;
 }
 
+/* Narrow, subtle scrollbar for the chat area */
+.saia-chat-scroll StScrollBar {
+	min-width: 3px;
+	min-height: 3px;
+}
+
+.saia-chat-scroll StScrollBar StButton#vhandle,
+.saia-chat-scroll StScrollBar StButton#hhandle {
+	background-color: rgba(128, 128, 128, 0.28);
+	border: 1px solid transparent;
+	border-radius: 2px;
+}
+
+.saia-chat-scroll StScrollBar StButton#vhandle:hover,
+.saia-chat-scroll StScrollBar StButton#hhandle:hover {
+	background-color: rgba(128, 128, 128, 0.45);
+}
+
+.saia-chat-scroll StScrollBar StButton#vhandle:active,
+.saia-chat-scroll StScrollBar StButton#hhandle:active {
+	background-color: rgba(128, 128, 128, 0.55);
+}
+
 .saia-message-box {
 	background-color: transparent;
 	padding: 0;
@@ -153,6 +176,7 @@
 	border: none;
 	box-shadow: none;
 	padding: 0;
+	selection-background-color: rgba(128, 128, 128, 0.4);
 }
 
 /* Message text is rendered as a read-only St.Entry (editable=false) so it is
@@ -162,6 +186,7 @@
 	border: none;
 	box-shadow: none;
 	padding: 0;
+	selection-background-color: rgba(128, 128, 128, 0.4);
 }
 
 .saia-message-text:focus,

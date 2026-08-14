@@ -457,6 +457,28 @@ export default class SimpleAiAssistantExtension extends Extension {
 		}
 	}
 
+	_setEntryHeight(entry) {
+		let lastHeight = 0;
+		const adjust = () => {
+			GLib.idle_add(GLib.PRIORITY_LOW, () => {
+				const width = entry.get_width();
+				if (width > 1) {
+					const [, natHeight] = entry.clutter_text.get_preferred_height(width);
+					if (Math.abs(lastHeight - natHeight) > 1) {
+						lastHeight = natHeight;
+						entry.set_height(natHeight + 4);
+					}
+				}
+				return GLib.SOURCE_REMOVE;
+			});
+		};
+		entry.connect("notify::allocation", adjust);
+		GLib.timeout_add(GLib.PRIORITY_DEFAULT, 50, () => {
+			adjust();
+			return GLib.SOURCE_REMOVE;
+		});
+	}
+
 	_addMessageToUi(role, content, messageObj = null) {
 		if (!content) return null;
 		if (this._emptyState) {
@@ -512,14 +534,16 @@ export default class SimpleAiAssistantExtension extends Extension {
 		// Use St.Entry (editable=false) instead of St.Label: St.Label's text is
 		// not selectable in GNOME Shell, while a read-only St.Entry allows mouse
 		// drag-selection and copy.
+		const fg = this._getThemeForegroundColor();
+		const fgRgb = fg ? `rgb(${fg.red}, ${fg.green}, ${fg.blue})` : "";
 		let textStyle = "";
 		if (role === "user" && !isCommandOutput) {
 			textStyle = "color: white;";
-		} else {
-			const fg = this._getThemeForegroundColor();
-			if (fg) {
-				textStyle = `color: rgb(${fg.red}, ${fg.green}, ${fg.blue});`;
-			}
+		} else if (fgRgb) {
+			textStyle = `color: ${fgRgb};`;
+		}
+		if (fgRgb) {
+			textStyle += ` selected-color: ${fgRgb};`;
 		}
 		const label = new St.Entry({
 			style_class: isCommandOutput ? "saia-terminal-text" : "saia-message-text",
@@ -541,6 +565,7 @@ export default class SimpleAiAssistantExtension extends Extension {
 		} catch (e) {
 			label.clutter_text.set_text(content);
 		}
+		this._setEntryHeight(label);
 
 		bubbleWidget.add_child(label);
 
@@ -616,7 +641,7 @@ export default class SimpleAiAssistantExtension extends Extension {
 		let terminalStyle = "";
 		const fg = this._getThemeForegroundColor();
 		if (fg) {
-			terminalStyle = `color: rgb(${fg.red}, ${fg.green}, ${fg.blue});`;
+			terminalStyle = `color: rgb(${fg.red}, ${fg.green}, ${fg.blue}); selected-color: rgb(${fg.red}, ${fg.green}, ${fg.blue});`;
 		}
 		const label = new St.Entry({
 			style_class: "saia-terminal-text",
@@ -630,6 +655,7 @@ export default class SimpleAiAssistantExtension extends Extension {
 		label.clutter_text.editable = false;
 		label.clutter_text.selectable = true;
 		label.set_text("Executing...");
+		this._setEntryHeight(label);
 		headerBox.add_child(label);
 
 		// Cancel button for command execution
