@@ -479,6 +479,74 @@ export default class SimpleAiAssistantExtension extends Extension {
 		});
 	}
 
+	_makeSelectableEntry(styleClass, style, opts = {}) {
+		const entry = new St.Entry({
+			style_class: styleClass,
+			style: style || "",
+			reactive: true,
+			can_focus: true,
+			x_expand: true,
+			y_expand: false,
+			x_align: Clutter.ActorAlign.FILL,
+			y_align: Clutter.ActorAlign.START,
+		});
+		entry.clutter_text.single_line_mode = false;
+		entry.clutter_text.line_wrap = opts.lineWrap !== false;
+		entry.clutter_text.ellipsize = Pango.EllipsizeMode.NONE;
+		entry.clutter_text.editable = false;
+		entry.clutter_text.selectable = true;
+		if (opts.wrapMode) {
+			entry.clutter_text.line_wrap_mode = opts.wrapMode;
+		}
+		return entry;
+	}
+
+	_renderBlock(block, isCommandOutput, textStyle) {
+		if (block.type === "code") {
+			return this._createCodeBlock(block.content);
+		}
+		if (block.type === "table") {
+			const entry = this._makeSelectableEntry("saia-table-text", textStyle, {
+				lineWrap: false,
+			});
+			try {
+				entry.clutter_text.set_markup(Utils.formatTable(block.content));
+			} catch (e) {
+				entry.clutter_text.set_text(block.content);
+			}
+			this._setEntryHeight(entry);
+			return entry;
+		}
+		const entry = this._makeSelectableEntry(
+			isCommandOutput ? "saia-terminal-text" : "saia-message-text",
+			textStyle,
+		);
+		try {
+			entry.clutter_text.set_markup(Utils.formatMessage(block.content));
+		} catch (e) {
+			entry.clutter_text.set_text(block.content);
+		}
+		this._setEntryHeight(entry);
+		return entry;
+	}
+
+	_createCodeBlock(code) {
+		const container = new St.BoxLayout({
+			vertical: true,
+			style_class: "saia-code-block",
+			x_expand: true,
+		});
+		const entry = this._makeSelectableEntry(
+			"saia-code-text",
+			"color: #f8f8f2; selected-color: #f8f8f2;",
+			{ wrapMode: Pango.WrapMode.WORD_CHAR },
+		);
+		entry.clutter_text.set_text(code);
+		this._setEntryHeight(entry);
+		container.add_child(entry);
+		return container;
+	}
+
 	_addMessageToUi(role, content, messageObj = null) {
 		if (!content) return null;
 		if (this._emptyState) {
@@ -528,6 +596,9 @@ export default class SimpleAiAssistantExtension extends Extension {
 		} else {
 			bubbleWidget.style_class =
 				role === "user" ? "saia-user-bubble" : "saia-assistant-bubble";
+			if (role !== "user") {
+				bubbleWidget.x_expand = true;
+			}
 		}
 
 		// 1. Message Text
@@ -536,8 +607,9 @@ export default class SimpleAiAssistantExtension extends Extension {
 		// drag-selection and copy.
 		const fg = this._getThemeForegroundColor();
 		const fgRgb = fg ? `rgb(${fg.red}, ${fg.green}, ${fg.blue})` : "";
+		const isUserBubble = role === "user" && !isCommandOutput;
 		let textStyle = "";
-		if (role === "user" && !isCommandOutput) {
+		if (isUserBubble) {
 			textStyle = "color: white;";
 		} else if (fgRgb) {
 			textStyle = `color: ${fgRgb};`;
@@ -545,29 +617,32 @@ export default class SimpleAiAssistantExtension extends Extension {
 		if (fgRgb) {
 			textStyle += ` selected-color: ${fgRgb};`;
 		}
-		const label = new St.Entry({
-			style_class: isCommandOutput ? "saia-terminal-text" : "saia-message-text",
-			style: textStyle,
-			reactive: true,
-			can_focus: true,
-			x_expand: true,
-			y_expand: false,
-			x_align: Clutter.ActorAlign.FILL,
-			y_align: Clutter.ActorAlign.START,
-		});
-		label.clutter_text.single_line_mode = false;
-		label.clutter_text.line_wrap = true;
-		label.clutter_text.ellipsize = Pango.EllipsizeMode.NONE;
-		label.clutter_text.editable = false;
-		label.clutter_text.selectable = true;
-		try {
-			label.clutter_text.set_markup(Utils.formatMessage(content));
-		} catch (e) {
-			label.clutter_text.set_text(content);
-		}
-		this._setEntryHeight(label);
 
-		bubbleWidget.add_child(label);
+		const blocks = Utils.parseBlocks(content);
+		if (blocks.length === 1 && blocks[0].type === "text") {
+			const label = this._makeSelectableEntry(
+				isCommandOutput ? "saia-terminal-text" : "saia-message-text",
+				textStyle,
+			);
+			try {
+				label.clutter_text.set_markup(Utils.formatMessage(blocks[0].content));
+			} catch (e) {
+				label.clutter_text.set_text(blocks[0].content);
+			}
+			this._setEntryHeight(label);
+			bubbleWidget.add_child(label);
+		} else {
+			const blockContainer = new St.BoxLayout({
+				vertical: true,
+				x_expand: true,
+				style: "spacing: 6px;",
+			});
+			for (const block of blocks) {
+				const widget = this._renderBlock(block, isCommandOutput, textStyle);
+				if (widget) blockContainer.add_child(widget);
+			}
+			bubbleWidget.add_child(blockContainer);
+		}
 
 		// 2. Copy Button (Overlay - Top Right)
 		const copyBtn = new St.Button({

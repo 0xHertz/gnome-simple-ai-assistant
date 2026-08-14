@@ -196,6 +196,34 @@
 	box-shadow: none;
 }
 
+/* Code block: full-width dark container with padding */
+.saia-code-block {
+	background-color: #2b2b2b;
+	border-radius: 6px;
+	padding: 10px 12px;
+}
+
+.saia-code-text {
+	font-family: "Monospace", monospace;
+	font-size: 0.95em;
+	background-color: transparent;
+	border: none;
+	box-shadow: none;
+	padding: 0;
+	selection-background-color: rgba(128, 128, 128, 0.4);
+}
+
+/* Markdown table: aligned monospace, no wrapping */
+.saia-table-text {
+	font-family: "Monospace", monospace;
+	font-size: 0.95em;
+	background-color: transparent;
+	border: none;
+	box-shadow: none;
+	padding: 0;
+	selection-background-color: rgba(128, 128, 128, 0.4);
+}
+
 .saia-settings-button {
 	padding: 0;
 	border-radius: 8px;
