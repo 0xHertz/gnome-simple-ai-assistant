@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.gnome.shell.extensions.simple-ai-assistant" path="/org/gnome/shell/extensions/simple-ai-assistant/">
+    <key name="api-provider" type="s">
+      <default>'gemini'</default>
+      <summary>API Provider</summary>
+    </key>
+    <key name="openai-api-key" type="s">
+      <default>''</default>
+    </key>
+    <key name="gemini-api-key" type="s">
+      <default>''</default>
+    </key>
+    <key name="openai-model" type="s">
+      <default>'gpt-5-mini'</default>
+    </key>
+    <key name="gemini-model" type="s">
+      <default>'gemini-2.5-flash'</default>
+    </key>
+    <key name="claude-api-key" type="s">
+      <default>''</default>
+    </key>
+    <key name="claude-model" type="s">
+      <default>'claude-sonnet-4-20250514'</default>
+    </key>
+    <key name="deepseek-api-key" type="s">
+      <default>''</default>
+    </key>
+    <key name="deepseek-model" type="s">
+      <default>'deepseek-chat'</default>
+    </key>
+    <key name="custom-api-key" type="s">
+      <default>''</default>
+    </key>
+    <key name="custom-model" type="s">
+      <default>''</default>
+    </key>
+    <key name="custom-base-url" type="s">
+      <default>'http://localhost:11434/v1'</default>
+    </key>
+    <key name="keyboard-shortcut" type="as">
+      <default>[]</default>
+      <summary>Keyboard shortcut to open the assistant</summary>
+    </key>
+    <key name="send-device-info" type="b">
+      <default>true</default>
+      <summary>Share system details (CPU, GPU, RAM, OS version) with the AI for better technical assistance.</summary>
+    </key>
+    <key name="history-limit" type="i">
+      <default>30</default>
+      <summary>History Limit</summary>
+    </key>
+    <key name="chat-height" type="i">
+      <default>560</default>
+      <summary>Chat Window Height</summary>
+    </key>
+    <key name="chat-width" type="i">
+      <default>500</default>
+      <summary>Chat Window Width</summary>
+    </key>
+  </schema>
+</schemalist>

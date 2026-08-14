@@ -1,0 +1,25 @@
+# GNOME Shell Extension artifacts
+schemas/gschemas.compiled
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Editor / IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+.kate-swp
+*~
+
+# Logs and databases
+*.log
+*.sqlite
+
+*.zip

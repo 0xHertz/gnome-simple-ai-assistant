@@ -1,0 +1,187 @@
+/* Theme-aware styles for Simple AI Assistant
+ * All classes are namespaced with "saia-" to avoid colliding with
+ * the global GNOME Shell theme or other extensions (e.g. Blur my Shell).
+ */
+
+.saia-chat-container {
+	padding: 10px;
+	background-color: transparent !important;
+}
+
+.saia-chat-header {
+	padding-bottom: 8px;
+	border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+	margin-bottom: 10px;
+}
+
+.saia-chat-header StLabel {
+	font-weight: bold;
+	font-size: 1.1em;
+}
+
+.saia-chat-box > * {
+	margin-bottom: 12px;
+}
+
+.saia-message-box {
+	background-color: transparent;
+	padding: 0;
+	border-radius: 0;
+}
+
+/* User Message: Bubble style, right aligned */
+.saia-user-msg-container {
+	max-width: 90%;
+}
+
+.saia-user-bubble {
+	padding: 8px 12px;
+	border-radius: 12px;
+	background-color: rgba(52, 132, 240, 0.8);
+	color: white;
+}
+
+/* Assistant Message: No bubble, full width */
+.saia-assistant-msg-container {
+	width: 100%;
+}
+
+.saia-assistant-bubble {
+	padding: 4px 0;
+	background-color: transparent;
+}
+
+/* Copy Button Overlay */
+/* Message overlay styling */
+
+.saia-copy-button {
+	padding: 4px;
+	border-radius: 4px;
+	background-color: transparent;
+	opacity: 0.3;
+}
+
+.saia-copy-button:hover {
+	opacity: 1;
+	background-color: rgba(128, 128, 128, 0.2);
+}
+
+/* Empty State Styling */
+.saia-empty-state {
+	padding: 20px;
+}
+
+.saia-empty-state-title {
+	font-weight: bold;
+	font-size: 1.25em;
+	opacity: 0.9;
+	text-align: center;
+	margin-bottom: 15px;
+}
+
+.saia-example-chip {
+	background-color: rgba(128, 128, 128, 0.1);
+	border: 1px solid rgba(128, 128, 128, 0.2);
+	border-radius: 20px;
+	padding: 10px 20px;
+	margin-bottom: 10px;
+	transition-duration: 200ms;
+}
+
+.saia-example-chip:hover {
+	background-color: rgba(128, 128, 128, 0.2);
+	border-color: rgba(52, 132, 240, 0.6);
+}
+
+.saia-example-chip StLabel {
+	font-size: 1em;
+	opacity: 0.8;
+	text-align: center;
+}
+
+/* API Reminder Styling */
+.saia-api-reminder {
+	color: #f39c12;
+	font-size: 0.9em;
+	font-weight: bold;
+	margin-bottom: 6px;
+	text-align: center;
+}
+
+/* Marker for input area */
+
+.saia-chat-input {
+	background-color: rgba(128, 128, 128, 0.1);
+	border-radius: 8px;
+	padding: 10px 14px;
+	border: 1px solid rgba(128, 128, 128, 0.2);
+	font-size: 1.1em;
+}
+
+.saia-chat-input:focus {
+	border-color: rgba(52, 132, 240, 0.8);
+}
+
+.saia-send-button {
+	padding: 0 12px;
+	border-radius: 8px;
+	background-color: rgba(52, 132, 240, 0.8);
+	color: white;
+}
+
+.saia-send-button:hover {
+	background-color: rgba(52, 132, 240, 0.9);
+}
+
+.saia-send-button:disabled {
+	background-color: rgba(128, 128, 128, 0.1);
+	color: rgba(255, 255, 255, 0.3);
+}
+
+.saia-terminal-box {
+	margin-top: 10px;
+	background-color: rgba(0, 0, 0, 0.4);
+	border-radius: 6px;
+	padding: 12px;
+	border-left: 3px solid rgba(52, 132, 240, 0.8);
+}
+
+.saia-terminal-text {
+	font-family: "Monospace", monospace;
+	font-size: 1em;
+}
+
+.saia-settings-button {
+	padding: 6px;
+	border-radius: 8px;
+	margin-right: 8px;
+	background-color: rgba(128, 128, 128, 0.1);
+}
+
+.saia-settings-button:hover {
+	background-color: rgba(128, 128, 128, 0.2);
+}
+
+/* Generalized Button Style (Action Buttons) */
+.saia-button,
+.saia-run-button,
+.saia-cancel-button {
+	padding: 6px 16px;
+	border-radius: 6px;
+	background-color: rgba(128, 128, 128, 0.15);
+	margin-top: 5px;
+}
+
+.saia-run-button {
+	margin-top: 12px;
+	padding: 8px 24px;
+	font-weight: bold;
+}
+
+.saia-button:hover,
+.saia-run-button:hover,
+.saia-cancel-button:hover {
+	background-color: rgba(128, 128, 128, 0.25);
+}
+
+/* Marker for consistency */

@@ -1,0 +1,12 @@
+{
+	"uuid": "simple-ai-assistant@momen.codes",
+	"name": "Simple AI Assistant",
+	"version": 2,
+	"description": "A simple light-weight, agentic AI assistant with terminal command support and local system context. Supports OpenAI, Google Gemini, Anthropic Claude, DeepSeek, and any OpenAI-compatible API. No data is sent to anyone but your chosen AI provider.",
+	"shell-version": ["45", "46", "47", "48"],
+	"license": "GPL-3.0-or-later",
+	"url": "https://github.com/MomenAbdelwadoud/linux-simple-ai-assistant",
+	"gettext-domain": "simple-ai-assistant",
+	"stylesheet": "stylesheet.css",
+	"settings-schema": "org.gnome.shell.extensions.simple-ai-assistant"
+}
