@@ -209,6 +209,7 @@ export default class SimpleAiAssistantExtension extends Extension {
 		this._chatScroll.style_class = "saia-chat-scroll";
 		this._chatScroll.x_expand = true;
 		this._chatScroll.y_expand = true;
+		this._chatScroll.set_policy(St.PolicyType.NEVER, St.PolicyType.AUTOMATIC);
 
 		this._chatBox = new St.BoxLayout();
 		this._chatBox.vertical = true;
@@ -466,16 +467,6 @@ export default class SimpleAiAssistantExtension extends Extension {
 		this._showEmptyState();
 	}
 
-	_getThemeForegroundColor() {
-		try {
-			return St.ThemeContext.get_for_stage(global.stage)
-				.get_root_node()
-				.get_foreground_color();
-		} catch (e) {
-			return null;
-		}
-	}
-
 	_setEntryHeight(entry) {
 		let lastHeight = 0;
 		const adjust = () => {
@@ -591,6 +582,8 @@ export default class SimpleAiAssistantExtension extends Extension {
 			x_align: Clutter.ActorAlign.START,
 			y_align: Clutter.ActorAlign.CENTER,
 		});
+		headerLabel.clutter_text.line_wrap = true;
+		headerLabel.clutter_text.line_wrap_mode = Pango.WrapMode.WORD_CHAR;
 		headerBox.add_child(arrow);
 		headerBox.add_child(headerLabel);
 		headerBtn.set_child(headerBox);
@@ -676,18 +669,9 @@ export default class SimpleAiAssistantExtension extends Extension {
 		// Use St.Entry (editable=false) instead of St.Label: St.Label's text is
 		// not selectable in GNOME Shell, while a read-only St.Entry allows mouse
 		// drag-selection and copy.
-		const fg = this._getThemeForegroundColor();
-		const fgRgb = fg ? `rgb(${fg.red}, ${fg.green}, ${fg.blue})` : "";
-		const isUserBubble = role === "user" && !isCommandOutput;
-		let textStyle = "";
-		if (isUserBubble) {
-			textStyle = "color: white;";
-		} else if (fgRgb) {
-			textStyle = `color: ${fgRgb};`;
-		}
-		if (fgRgb) {
-			textStyle += ` selected-color: ${fgRgb};`;
-		}
+		// Text color is handled via CSS `color: inherit` so it follows the
+		// system light/dark color-scheme automatically.
+		const textStyle = "";
 
 		if (isCommandOutput) {
 			bubbleWidget.add_child(this._createCommandOutput(content, textStyle));
@@ -785,11 +769,7 @@ export default class SimpleAiAssistantExtension extends Extension {
 		box.style_class = "saia-terminal-box";
 
 		const headerBox = new St.BoxLayout();
-		let terminalStyle = "";
-		const fg = this._getThemeForegroundColor();
-		if (fg) {
-			terminalStyle = `color: rgb(${fg.red}, ${fg.green}, ${fg.blue}); selected-color: rgb(${fg.red}, ${fg.green}, ${fg.blue});`;
-		}
+		const terminalStyle = "";
 		const label = new St.Entry({
 			style_class: "saia-terminal-text",
 			style: terminalStyle,

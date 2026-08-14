@@ -172,6 +172,8 @@
 .saia-terminal-text {
 	font-family: "Monospace", monospace;
 	font-size: 1em;
+	color: inherit;
+	selected-color: inherit;
 	background-color: transparent;
 	border: none;
 	box-shadow: none;
@@ -195,6 +197,8 @@
 /* Message text is rendered as a read-only St.Entry (editable=false) so it is
  * mouse-selectable/copyable; strip the default entry chrome to look like a label. */
 .saia-message-text {
+	color: inherit;
+	selected-color: inherit;
 	background-color: transparent;
 	border: none;
 	box-shadow: none;
@@ -230,6 +234,8 @@
 .saia-table-text {
 	font-family: "Monospace", monospace;
 	font-size: 0.95em;
+	color: inherit;
+	selected-color: inherit;
 	background-color: transparent;
 	border: none;
 	box-shadow: none;
