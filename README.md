@@ -34,11 +34,11 @@ Inspired By: [GIthub](https://github.com/MomenAbdelwadoud/linux-simple-ai-assist
 1. Clone or download this repository.
 2. Copy the folder to your local extensions directory:
     ```bash
-    cp -r . ~/.local/share/gnome-shell/extensions/simple-ai-assistant@momen.codes
+    cp -r . ~/.local/share/gnome-shell/extensions/simple-ai-assistant@hertz.com
     ```
 3. Compile the settings schema:
     ```bash
-    glib-compile-schemas ~/.local/share/gnome-shell/extensions/simple-ai-assistant@momen.codes/schemas/
+    glib-compile-schemas ~/.local/share/gnome-shell/extensions/simple-ai-assistant@hertz.com/schemas/
     ```
 4. Restart GNOME Shell (Alt+F2 + `r` on X11, or Log out/Log in on Wayland).
 5. Enable the extension using GNOME Extensions app.
