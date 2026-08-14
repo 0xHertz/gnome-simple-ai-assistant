@@ -66,6 +66,21 @@ export default class SimpleAiAssistantExtension extends Extension {
 			this._buildUi();
 			Main.panel.addToStatusArea("simple-ai-assistant", this._indicator);
 
+			// Keep the popup below the on-screen keyboard so the IME candidate
+			// window (raised above the keyboard) stays above it instead of being
+			// covered while typing.
+			this._menuOpenId = this._indicator.menu.connect(
+				"open-state-changed",
+				(menu, open) => {
+					if (!open) return;
+					const parent = menu.actor.get_parent();
+					const {keyboardBox} = Main.layoutManager;
+					if (parent && keyboardBox) {
+						parent.set_child_below_sibling(menu.actor, keyboardBox);
+					}
+				},
+			);
+
 			this._heightId = this._settings.connect("changed::chat-height", () =>
 				this._updateSize(),
 			);
@@ -106,6 +121,10 @@ export default class SimpleAiAssistantExtension extends Extension {
 		if (this._widthId) this._settings.disconnect(this._widthId);
 		if (this._providerId) this._settings.disconnect(this._providerId);
 		if (this._shortcutId) this._settings.disconnect(this._shortcutId);
+		if (this._menuOpenId) {
+			this._indicator.menu.disconnect(this._menuOpenId);
+			this._menuOpenId = null;
+		}
 		if (this._indicator) this._indicator.destroy();
 		this._indicator = null;
 		this._settings = null;

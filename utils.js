@@ -116,6 +116,11 @@ export function formatMessage(text) {
 		return `\u0001${stash.length - 1}\u0001`;
 	};
 
+	// Inline code with double backticks (``...``) — may contain single backticks
+	text = text.replace(/``([^\n]*?)``/g, (m, code) =>
+		stashCode(`<tt>${escapePango(code)}</tt>`),
+	);
+
 	// Inline code (`...`)
 	text = text.replace(/`([^`\n]+)`/g, (m, code) =>
 		stashCode(`<tt>${escapePango(code)}</tt>`),
