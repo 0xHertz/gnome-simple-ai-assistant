@@ -8,11 +8,16 @@ Inspired By: [GIthub](https://github.com/MomenAbdelwadoud/linux-simple-ai-assist
 
 ## 🌟 Features
 
+- **Multi-Provider Support**: OpenAI, Google Gemini, Anthropic Claude, DeepSeek, or any OpenAI-compatible endpoint.
+- **Markdown Rendering**: Headers, bold/italic, inline code, fenced code blocks, tables, links, lists, and blockquotes.
+- **Selectable & Copyable Messages**: Copy any response with one click, or select text directly with the mouse.
 - **Agentic Loop**: AI can propose commands, see output, and continue the task.
-- **Secure & Private**: API keys are stored locally in GSettings. No data is sent to anyone but your chosen AI provider.
 - **Sudo Support**: Execute privileged commands safely via `pkexec` with native system password prompts and output capture.
 - **System Awareness**: Optionally share system details (CPU, GPU, RAM, OS) for better technical assistance.
+- **Secure & Private**: API keys are stored locally in GSettings. No data is sent to anyone but your chosen AI provider.
 - **Theme Support**: Automatically matches your system theme (Light/Dark).
+- **Keyboard Shortcut**: Configurable global shortcut to open the assistant.
+- **Customizable Window**: Adjustable width and height.
 - **History Management**: Local history storage with configurable message limits.
 
 ## 📸 Screenshots
