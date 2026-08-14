@@ -179,6 +179,19 @@
 	selection-background-color: rgba(128, 128, 128, 0.4);
 }
 
+/* Clickable header that toggles the collapsed command output */
+.saia-command-header {
+	background-color: transparent;
+	border: none;
+	box-shadow: none;
+	padding: 2px 0;
+	border-radius: 4px;
+}
+
+.saia-command-header:hover {
+	background-color: rgba(128, 128, 128, 0.15);
+}
+
 /* Message text is rendered as a read-only St.Entry (editable=false) so it is
  * mouse-selectable/copyable; strip the default entry chrome to look like a label. */
 .saia-message-text {

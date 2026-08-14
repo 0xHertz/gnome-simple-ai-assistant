@@ -566,6 +566,58 @@ export default class SimpleAiAssistantExtension extends Extension {
 		return container;
 	}
 
+	_createCommandOutput(content, textStyle) {
+		const newlineIdx = content.indexOf("\n");
+		const headerText = newlineIdx === -1 ? content : content.slice(0, newlineIdx);
+		const bodyText = newlineIdx === -1 ? "" : content.slice(newlineIdx + 1);
+
+		const container = new St.BoxLayout({
+			vertical: true,
+			x_expand: true,
+		});
+
+		const headerBtn = new St.Button({
+			style_class: "saia-command-header",
+			reactive: true,
+			can_focus: true,
+			x_expand: true,
+		});
+		const headerBox = new St.BoxLayout({ vertical: false, style: "spacing: 6px;" });
+		const arrow = new St.Icon({ icon_name: "pan-end-symbolic", icon_size: 12 });
+		const headerLabel = new St.Label({
+			text: headerText,
+			style_class: "saia-terminal-text",
+			x_expand: true,
+			x_align: Clutter.ActorAlign.START,
+			y_align: Clutter.ActorAlign.CENTER,
+		});
+		headerBox.add_child(arrow);
+		headerBox.add_child(headerLabel);
+		headerBtn.set_child(headerBox);
+		container.add_child(headerBtn);
+
+		if (bodyText) {
+			const body = this._makeSelectableEntry(
+				"saia-terminal-text",
+				textStyle,
+				{ wrapMode: Pango.WrapMode.WORD_CHAR },
+			);
+			body.clutter_text.set_text(bodyText);
+			this._setEntryHeight(body);
+			body.visible = false;
+			container.add_child(body);
+
+			let expanded = false;
+			headerBtn.connect("clicked", () => {
+				expanded = !expanded;
+				arrow.icon_name = expanded ? "pan-down-symbolic" : "pan-end-symbolic";
+				body.visible = expanded;
+			});
+		}
+
+		return container;
+	}
+
 	_addMessageToUi(role, content, messageObj = null) {
 		if (!content) return null;
 		if (this._emptyState) {
@@ -637,30 +689,31 @@ export default class SimpleAiAssistantExtension extends Extension {
 			textStyle += ` selected-color: ${fgRgb};`;
 		}
 
-		const blocks = Utils.parseBlocks(content);
-		if (blocks.length === 1 && blocks[0].type === "text") {
-			const label = this._makeSelectableEntry(
-				isCommandOutput ? "saia-terminal-text" : "saia-message-text",
-				textStyle,
-			);
-			try {
-				label.clutter_text.set_markup(Utils.formatMessage(blocks[0].content));
-			} catch (e) {
-				label.clutter_text.set_text(blocks[0].content);
-			}
-			this._setEntryHeight(label);
-			bubbleWidget.add_child(label);
+		if (isCommandOutput) {
+			bubbleWidget.add_child(this._createCommandOutput(content, textStyle));
 		} else {
-			const blockContainer = new St.BoxLayout({
-				vertical: true,
-				x_expand: true,
-				style: "spacing: 6px;",
-			});
-			for (const block of blocks) {
-				const widget = this._renderBlock(block, isCommandOutput, textStyle);
-				if (widget) blockContainer.add_child(widget);
+			const blocks = Utils.parseBlocks(content);
+			if (blocks.length === 1 && blocks[0].type === "text") {
+				const label = this._makeSelectableEntry("saia-message-text", textStyle);
+				try {
+					label.clutter_text.set_markup(Utils.formatMessage(blocks[0].content));
+				} catch (e) {
+					label.clutter_text.set_text(blocks[0].content);
+				}
+				this._setEntryHeight(label);
+				bubbleWidget.add_child(label);
+			} else {
+				const blockContainer = new St.BoxLayout({
+					vertical: true,
+					x_expand: true,
+					style: "spacing: 6px;",
+				});
+				for (const block of blocks) {
+					const widget = this._renderBlock(block, isCommandOutput, textStyle);
+					if (widget) blockContainer.add_child(widget);
+				}
+				bubbleWidget.add_child(blockContainer);
 			}
-			bubbleWidget.add_child(blockContainer);
 		}
 
 		// 2. Copy Button (Overlay - Top Right)
