@@ -149,13 +149,35 @@
 .saia-terminal-text {
 	font-family: "Monospace", monospace;
 	font-size: 1em;
+	background-color: transparent;
+	border: none;
+	box-shadow: none;
+	padding: 0;
+}
+
+/* Message text is rendered as a read-only St.Entry (editable=false) so it is
+ * mouse-selectable/copyable; strip the default entry chrome to look like a label. */
+.saia-message-text {
+	background-color: transparent;
+	border: none;
+	box-shadow: none;
+	padding: 0;
+}
+
+.saia-message-text:focus,
+.saia-terminal-text:focus {
+	background-color: transparent;
+	border: none;
+	box-shadow: none;
 }
 
 .saia-settings-button {
-	padding: 6px;
+	padding: 0;
 	border-radius: 8px;
 	margin-right: 8px;
 	background-color: rgba(128, 128, 128, 0.1);
+	min-width: 32px;
+	min-height: 32px;
 }
 
 .saia-settings-button:hover {
@@ -163,7 +185,13 @@
 }
 
 /* Generalized Button Style (Action Buttons) */
-.saia-button,
+.saia-button {
+	padding: 0 16px;
+	border-radius: 6px;
+	background-color: rgba(128, 128, 128, 0.15);
+	min-height: 32px;
+}
+
 .saia-run-button,
 .saia-cancel-button {
 	padding: 6px 16px;

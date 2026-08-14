@@ -2,7 +2,9 @@
 
 A light-weight, private agentic AI assistant for GNOME Shell. Get things done with terminal command support and local system context.
 
-**Source Code**: [GitHub](https://github.com/MomenAbdelwadoud/linux-simple-ai-assistant)
+**Source Code**:  [GitHub](https://github.com/0xHertz/gnome-simple-ai-assistant)
+
+Inspired By: [GIthub](https://github.com/MomenAbdelwadoud/linux-simple-ai-assistant)
 
 ## 🌟 Features
 
@@ -16,10 +18,6 @@ A light-weight, private agentic AI assistant for GNOME Shell. Get things done wi
 ## 📸 Screenshots
 
 ![New Chat](demo/screenshot-new-chat.png)
-_New Chat interface with AI provider selection_
-
-![Command Execution](demo/screenshot-running.png)
-_Agentic command execution with terminal output_
 
 ## 🛠 Prerequisites
 

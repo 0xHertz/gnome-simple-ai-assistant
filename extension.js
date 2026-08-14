@@ -168,6 +168,7 @@ export default class SimpleAiAssistantExtension extends Extension {
 
 		const settingsBtn = new St.Button();
 		settingsBtn.style_class = "saia-settings-button";
+		settingsBtn.y_align = Clutter.ActorAlign.CENTER;
 		const sIcon = new St.Icon();
 		sIcon.icon_name = "emblem-system-symbolic";
 		sIcon.icon_size = 16;
@@ -176,6 +177,7 @@ export default class SimpleAiAssistantExtension extends Extension {
 
 		const newChatBtn = new St.Button();
 		newChatBtn.style_class = "saia-button";
+		newChatBtn.y_align = Clutter.ActorAlign.CENTER;
 		newChatBtn.label = "New Chat";
 		newChatBtn.connect("clicked", () => this._newChat());
 
@@ -445,6 +447,16 @@ export default class SimpleAiAssistantExtension extends Extension {
 		this._showEmptyState();
 	}
 
+	_getThemeForegroundColor() {
+		try {
+			return St.ThemeContext.get_for_stage(global.stage)
+				.get_root_node()
+				.get_foreground_color();
+		} catch (e) {
+			return null;
+		}
+	}
+
 	_addMessageToUi(role, content, messageObj = null) {
 		if (!content) return null;
 		if (this._emptyState) {
@@ -497,20 +509,38 @@ export default class SimpleAiAssistantExtension extends Extension {
 		}
 
 		// 1. Message Text
-		const label = new St.Label({
+		// Use St.Entry (editable=false) instead of St.Label: St.Label's text is
+		// not selectable in GNOME Shell, while a read-only St.Entry allows mouse
+		// drag-selection and copy.
+		let textStyle = "";
+		if (role === "user" && !isCommandOutput) {
+			textStyle = "color: white;";
+		} else {
+			const fg = this._getThemeForegroundColor();
+			if (fg) {
+				textStyle = `color: rgb(${fg.red}, ${fg.green}, ${fg.blue});`;
+			}
+		}
+		const label = new St.Entry({
 			style_class: isCommandOutput ? "saia-terminal-text" : "saia-message-text",
+			style: textStyle,
+			reactive: true,
+			can_focus: true,
 			x_expand: true,
 			y_expand: false,
 			x_align: Clutter.ActorAlign.FILL,
 			y_align: Clutter.ActorAlign.START,
 		});
+		label.clutter_text.single_line_mode = false;
+		label.clutter_text.line_wrap = true;
+		label.clutter_text.ellipsize = Pango.EllipsizeMode.NONE;
+		label.clutter_text.editable = false;
+		label.clutter_text.selectable = true;
 		try {
 			label.clutter_text.set_markup(Utils.formatMessage(content));
 		} catch (e) {
 			label.clutter_text.set_text(content);
 		}
-		label.clutter_text.line_wrap = true;
-		label.clutter_text.ellipsize = Pango.EllipsizeMode.NONE;
 
 		bubbleWidget.add_child(label);
 
@@ -583,12 +613,23 @@ export default class SimpleAiAssistantExtension extends Extension {
 		box.style_class = "saia-terminal-box";
 
 		const headerBox = new St.BoxLayout();
-		const label = new St.Label({
-			text: "Executing...",
+		let terminalStyle = "";
+		const fg = this._getThemeForegroundColor();
+		if (fg) {
+			terminalStyle = `color: rgb(${fg.red}, ${fg.green}, ${fg.blue});`;
+		}
+		const label = new St.Entry({
 			style_class: "saia-terminal-text",
+			style: terminalStyle,
+			reactive: true,
+			can_focus: true,
 			x_expand: true,
 			y_align: Clutter.ActorAlign.CENTER,
 		});
+		label.clutter_text.single_line_mode = false;
+		label.clutter_text.editable = false;
+		label.clutter_text.selectable = true;
+		label.set_text("Executing...");
 		headerBox.add_child(label);
 
 		// Cancel button for command execution
@@ -611,7 +652,7 @@ export default class SimpleAiAssistantExtension extends Extension {
 					// Ignore kill errors
 				}
 			}
-			label.text = "Cancelled";
+			label.set_text("Cancelled");
 		});
 		headerBox.add_child(cancelBtn);
 
@@ -643,7 +684,7 @@ export default class SimpleAiAssistantExtension extends Extension {
 				const innerCmd = cmd.trim().substring(5);
 				// Use -- to ensure arguments are handled correctly
 				actualCmd = `pkexec bash -c '${innerCmd.replace(/'/g, "'\\''")}'`;
-				label.text = "Authentication required...";
+				label.set_text("Authentication required...");
 			}
 
 			const [res, stdout, stderr, exitStatus] =
@@ -668,7 +709,7 @@ export default class SimpleAiAssistantExtension extends Extension {
 				}
 			}
 
-			label.text = result;
+			label.set_text(result);
 			copyBtn.show();
 
 			// Remove the temporary box from the current message row before adding the permanent output message
@@ -705,7 +746,7 @@ export default class SimpleAiAssistantExtension extends Extension {
 				);
 				this._addMessageToUi(timeoutMsg.role, timeoutMsg.content, timeoutMsg);
 			} else if (e.message === "Cancelled") {
-				label.text = "Command cancelled";
+				label.set_text("Command cancelled");
 			} else {
 				msgBox.remove_child(box);
 				const errorMsg = {
