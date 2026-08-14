@@ -293,8 +293,8 @@ export default class SimpleAiAssistantPreferences extends ExtensionPreferences {
 		infoGroup.add(privacyRow);
 
 		const creditsRow = new Adw.ActionRow({
-			title: _("Developed by Momen Elkhalifa"),
-			subtitle: _("Visit website: momen.codes"),
+			title: _("Developed by Hertz"),
+			subtitle: _("Visit GitHub: github.com/0xHertz"),
 			activatable: true,
 		});
 		const creditsIcon = new Gtk.Image({
@@ -302,7 +302,7 @@ export default class SimpleAiAssistantPreferences extends ExtensionPreferences {
 		});
 		creditsRow.add_prefix(creditsIcon);
 		creditsRow.connect("activated", () => {
-			GLib.spawn_command_line_async("xdg-open https://momen.codes");
+			GLib.spawn_command_line_async("xdg-open https://github.com/0xHertz");
 		});
 		infoGroup.add(creditsRow);
 	}
