@@ -47,7 +47,7 @@ Inspired By: [GIthub](https://github.com/MomenAbdelwadoud/linux-simple-ai-assist
 
 ## 👨‍💻 Credits
 
-Developed by **Momen Elkhalifa** ([momen.codes](https://momen.codes)).
+Developed by **0xHertz** .
 
 ## 📜 License
 
