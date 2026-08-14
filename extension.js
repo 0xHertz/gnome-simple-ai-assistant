@@ -517,7 +517,7 @@ export default class SimpleAiAssistantExtension extends Extension {
 		}
 		if (block.type === "table") {
 			const entry = this._makeSelectableEntry("saia-table-text", textStyle, {
-				lineWrap: false,
+				wrapMode: Pango.WrapMode.WORD_CHAR,
 			});
 			try {
 				entry.clutter_text.set_markup(Utils.formatTable(block.content));
