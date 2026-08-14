@@ -942,10 +942,10 @@ export default class SimpleAiAssistantExtension extends Extension {
 	_spawnCommandLineAsyncWithTimeout(cmd, timeoutSeconds) {
 		return new Promise((resolve, reject) => {
 			try {
-				const [success, argv] = GLib.shell_parse_argv(cmd);
+				// Run via bash so shell operators (&&, |, >, ~, $VAR, globs) work.
 				const [res, pid, stdin, stdout, stderr] = GLib.spawn_async_with_pipes(
 					null,
-					argv,
+					["/bin/bash", "-c", cmd],
 					null,
 					GLib.SpawnFlags.SEARCH_PATH,
 					null,
@@ -982,7 +982,7 @@ export default class SimpleAiAssistantExtension extends Extension {
 				// Add child watch to reap the process
 				GLib.child_watch_add(GLib.PRIORITY_DEFAULT, pid, (pid, status) => {
 					completed = true;
-					exitStatus = status;
+					exitStatus = (status >> 8) & 0xff;
 					GLib.Source.remove(timeoutId);
 				});
 
